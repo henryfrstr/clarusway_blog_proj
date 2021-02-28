@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +44,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
 
     # third party
-    'crispy_forms'
+    'crispy_forms',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -82,8 +84,12 @@ WSGI_APPLICATION = 'cblog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'database1',
+        'USER': 'admin',
+        'PASSWORD': 'Clarusway1234',
+        'HOST': 'database-1.cbanmzptkrzf.us-east-1.rds.amazonaws.com',
+        'PORT': '3306'
     }
 }
 
@@ -143,3 +149,20 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config("EMAIL_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD")
+
+
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+AWS_STORAGE_BUCKET_NAME = ''
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_REGION_NAME = ""
+AWS_DEFAULT_ACL = 'public-read'
+
+AWS_LOCATION = 'static'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'core.storages.MediaStore'
